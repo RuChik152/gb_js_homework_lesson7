@@ -75,17 +75,21 @@ const products = {
     ],
 };
 
+let btn = document.querySelectorAll('button');
+let productsBlock = document.querySelector('.products');
+
+btn.forEach(function (item) {
+    item.addEventListener('click', clickHandler);
+});
 
 /**
  * Эта функция должна вызываться при клике по кнопкам.
  * @param {MouseEvent} event
  */
 function clickHandler(event) {
-    //вам нужно очищать содержимое .products
-    
-    //в showCategory надо передать строку с типом категории, тип берите
-    //из атрибута data-type у кнопки, по которой кликнули.
-    
+    productsBlock.innerHTML = '';
+    let data = event.currentTarget.dataset.type;
+    showCategory(data);
 }
 
 /**
@@ -96,7 +100,17 @@ function clickHandler(event) {
  * по которой кликнули.
  */
 function showCategory(category) {
-    
+    switch (category) {
+        case 'phones':
+            getProductMarkup(products.phones);
+            break;
+        case 'tablets':
+            getProductMarkup(products.tablets);
+            break;
+        case 'tv':
+            getProductMarkup(products.tv);
+            break;
+    }
 }
 
 /**
@@ -109,5 +123,39 @@ function showCategory(category) {
  * в верху этого файла.
  */
 function getProductMarkup(product) {
+    product.forEach(function (element) {
+        let str = `<div class="product">
+                        <div>${element.name}</div>
+                        <img src="${element.imageUrl}" alt="">
+                        <div>${element.price}</div>
+                        <a href="https://example.com/producs/${element.id}">Подробнее</a>
+                    </div>`;
+        productsBlock.insertAdjacentHTML('afterbegin', str);
+    });
 
+    //Решил попробовать без шаблонного литерала, все таки с ним короче выходит, хотя работае и то и то
+    /*
+    product.forEach(function(element){
+        let div = document.createElement('div');
+        div.classList.add('product');
+
+        let nameDiv = document.createElement('div');
+        let imgDiv = document.createElement('img');
+        let pricDiv = document.createElement('div');
+        let aDiv = document.createElement('a');
+
+        nameDiv.innerHTML = element.name;
+        imgDiv.src = element.imageUrl;
+        pricDiv.innerHTML = element.price;
+        aDiv.href = `https://example.com/producs/${element.id}`
+        aDiv.innerHTML = 'Подробнее';
+
+        div.insertAdjacentElement('afterbegin', aDiv);
+        div.insertAdjacentElement('afterbegin', pricDiv);
+        div.insertAdjacentElement('afterbegin', imgDiv);
+        div.insertAdjacentElement('afterbegin', nameDiv);
+
+        productsBlock.insertAdjacentElement('afterbegin', div);
+    });
+    */
 }
